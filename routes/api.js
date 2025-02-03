@@ -43,49 +43,71 @@ router.get('/hospitals/:hospitalId/doctors', async (req, res) => {
 });
 
 // Book appointment
-router.post('/appointments', authenticateToken, async (req, res) => {
-    try {
-        const { hospitalId, doctorId, date } = req.body;
+// router.post('/appointments', authenticateToken, async (req, res) => {
+//     try {
+//         const { hospitalId, doctorId, date } = req.body;
 
-        if (!hospitalId || !doctorId || !date) {
-            return res.status(400).json({ error: 'Hospital ID, Doctor ID, and Date are required.' });
-        }
+//         if (!hospitalId || !doctorId || !date) {
+//             return res.status(400).json({ error: 'Hospital ID, Doctor ID, and Date are required.' });
+//         }
 
-        const appointment = new Appointment({
-            userId: req.user.id,
-            hospitalId,
-            doctorId,
-            date
-        });
+//         const appointment = new Appointment({
+//             userId: req.user.id,
+//             hospitalId,
+//             doctorId,
+//             date
+//         });
 
-        await appointment.save();
-        res.status(201).json({ message: 'Appointment booked successfully', appointment });
-    } catch (error) {
-        console.error('Error booking appointment:', error.message);
-        res.status(500).json({ error: 'Internal server error.' });
-    }
-});
+//         await appointment.save();
+//         res.status(201).json({ message: 'Appointment booked successfully', appointment });
+//     } catch (error) {
+//         console.error('Error booking appointment:', error.message);
+//         res.status(500).json({ error: 'Internal server error.' });
+//     }
+// });
 
-// Delete appointment
-router.delete('/appointments/:id', authenticateToken, async (req, res) => {
-    try {
-        const { id } = req.params;
+// // Get all appointments for the authenticated user
+// router.get('/appointments', authenticateToken, async (req, res) => {
+//     try {
+//         const userId = req.user.id; // Extract user ID from token
 
-        if (!id) {
-            return res.status(400).json({ error: 'Appointment ID is required.' });
-        }
+//         // Convert userId to ObjectId for querying the database
+//         const appointments = await Appointment.find({ userId: new mongoose.Types.ObjectId(userId) });
 
-        const appointment = await Appointment.findByIdAndDelete(id);
+//         if (!appointments || appointments.length === 0) {
+//             return res.status(404).json({ message: 'No appointments found.' });
+//         }
 
-        if (!appointment) {
-            return res.status(404).json({ error: 'Appointment not found.' });
-        }
+//         res.status(200).json({ appointments });
+//     } catch (error) {
+//         console.error('Error fetching appointments:', error);
+//         res.status(500).json({ error: 'Internal server error.' });
+//     }
+// });
 
-        res.status(200).json({ message: 'Appointment deleted successfully.' });
-    } catch (error) {
-        console.error('Error deleting appointment:', error.message);
-        res.status(500).json({ error: 'Internal server error.' });
-    }
-});
+
+
+// // Delete an appointment
+// router.delete('/appointments/:id', authenticateToken, async (req, res) => {
+//     try {
+//         const { id } = req.params;
+
+//         if (!id) {
+//             return res.status(400).json({ error: 'Appointment ID is required.' });
+//         }
+
+//         // Convert id to ObjectId for MongoDB query
+//         const appointment = await Appointment.findByIdAndDelete(new mongoose.Types.ObjectId(id));
+
+//         if (!appointment) {
+//             return res.status(404).json({ error: 'Appointment not found.' });
+//         }
+
+//         res.status(200).json({ message: 'Appointment deleted successfully.' });
+//     } catch (error) {
+//         console.error('Error deleting appointment:', error.message);
+//         res.status(500).json({ error: 'Internal server error.' });
+//     }
+// });
 
 module.exports = router;
