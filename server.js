@@ -5,8 +5,10 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 
 const userRoutes = require('./routes/user');
+const adminRoutes = require('./routes/hospital_admin_api');
 const apiRoutes = require('./routes/api');
 const appointmentRoutes = require('./routes/appointments_api');
+
 
 const app = express();
 
@@ -17,7 +19,8 @@ app.use(cors());
 // Routes
 app.use('/api/users', userRoutes);
 app.use('/api', apiRoutes);
-app.use('/api/appointment',appointmentRoutes)
+app.use('/api/appointment',appointmentRoutes);
+app.use('/api/admin', adminRoutes);
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
