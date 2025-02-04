@@ -1,7 +1,7 @@
-# Healthcare Management System
+# SigmaCare Health Management System
 
 ## Overview
-The **Healthcare Management System** is a web-based application designed to manage hospital operations efficiently. It includes user and hospital login systems, patient records, appointment scheduling, and more. The backend is powered by **Node.js, Express, and MongoDB**.
+The **SigmaCare Healthcare Management System** is a web-based application designed to manage hospital operations efficiently. It includes user and hospital login systems, patient records, appointment scheduling, and more. The backend is powered by **Node.js, Express, and MongoDB**.
 
 ## Features
 - **User Authentication** (Patients & Hospital Admins)
@@ -61,14 +61,14 @@ module.exports = mongoose.model('HospitalAdmin', HospitalAdminSchema);
 ### Authentication
 
 #### 1. Register a New User
-**Endpoint:** `POST /api/auth/register`
+**Endpoint:** `POST /api/user/register`
 **Request Body:**
 ```json
 {
   "name": "John Doe",
   "email": "john@example.com",
   "password": "securepassword",
-  "role": "patient"
+  "phone": "number"
 }
 ```
 **Response:**
@@ -79,7 +79,7 @@ module.exports = mongoose.model('HospitalAdmin', HospitalAdminSchema);
 ```
 
 #### 2. Login User
-**Endpoint:** `POST /api/auth/login`
+**Endpoint:** `POST /api/user/login`
 **Request Body:**
 ```json
 {
@@ -94,10 +94,178 @@ module.exports = mongoose.model('HospitalAdmin', HospitalAdminSchema);
 }
 ```
 
+#### 3. Get All Hospitals
+**Endpoint:** `GET /api/hospitals`
+**Request Body:**
+```json
+
+```
+**Response:**
+```json
+[
+  {
+    "_id": "678e29f172a92cc11e42d238",
+    "name": "City Health Hospital",
+    "email": "contact@cityhealth.com",
+    "contact": "1234567890",
+    "city": "New York",
+    "state": "NY",
+    "address": "123 Main St, New York, NY 10001"
+  },
+  {
+    "_id": "678e2a0572a92cc11e42d239",
+    "name": "Metro Medical Center",
+    "email": "info@metromedical.com",
+    "contact": "0987654321",
+    "city": "Los Angeles",
+    "state": "CA",
+    "address": "456 Elm St, Los Angeles, CA 90001"
+  },
+]
+```
+
+#### 4. Get All Doctors in a Hospitals
+**Endpoint:** `GET /api/hospitals/:hospitalId/doctors`
+**Request Body:**
+```json
+
+```
+**Response:**
+```json
+[
+  {
+    "_id": "678e2aa672a92cc11e42d23c",
+    "name": "Dr. Robert Smith",
+    "hospitalId": "678e29f172a92cc11e42d238",
+    "specialization": "Neurology",
+    "experience": 8,
+    "contact": "0987654321"
+  }
+]
+```
+
+#### 5. Book an Appointment
+**Endpoint:** `POST /api/appointment/`
+**Request Body:**
+```json
+{
+  "hospitalId": "678e2a0572a92cc11e42d239",
+  "doctorId": "678e2a8372a92cc11e42d23b",
+  "date": "2024-02-05T10:30:00.000Z"
+}
+
+```
+**Response:**
+```json
+{
+  "message": "Appointment booked successfully",
+  "appointment": {
+    "userId": "67a1c2dddcabd418c7845259",
+    "hospitalId": "678e2a0572a92cc11e42d239",
+    "doctorId": "678e2a8372a92cc11e42d23b",
+    "date": "2024-02-05T10:30:00.000Z",
+    "status": "Pending",
+    "_id": "67a1c63584dca27d63166f7c",
+    "createdAt": "2025-02-04T07:48:05.400Z",
+    "updatedAt": "2025-02-04T07:48:05.400Z",
+    "__v": 0
+  }
+}
+```
+
+#### 6. Get all the appointments made by the user
+**Endpoint:** `GET /api/appointment/`
+**Request Body:**
+```json
+
+```
+**Response:**
+```json
+{
+  "appointments": [
+    {
+      "_id": "67a1c63584dca27d63166f7c",
+      "userId": "67a1c2dddcabd418c7845259",
+      "hospitalId": "678e2a0572a92cc11e42d239",
+      "doctorId": "678e2a8372a92cc11e42d23b",
+      "date": "2024-02-05T10:30:00.000Z",
+      "status": "Pending",
+      "createdAt": "2025-02-04T07:48:05.400Z",
+      "updatedAt": "2025-02-04T07:48:05.400Z",
+      "__v": 0
+    }
+  ]
+}
+```
+
+#### 6. Get a single appointment made by the user
+**Endpoint:** `GET /api/appointment/:id`
+**Request Body:**
+```json
+
+```
+**Response:**
+```json
+{
+  "appointment": {
+    "_id": "67a1c63584dca27d63166f7c",
+    "userId": "67a1c2dddcabd418c7845259",
+    "hospitalId": "678e2a0572a92cc11e42d239",
+    "doctorId": "678e2a8372a92cc11e42d23b",
+    "date": "2024-02-05T10:30:00.000Z",
+    "status": "Pending",
+    "createdAt": "2025-02-04T07:48:05.400Z",
+    "updatedAt": "2025-02-04T07:48:05.400Z",
+    "__v": 0
+  }
+}
+```
+
+#### 6. Delete an appointment made by the user
+**Endpoint:** `DELETE /api/appointment/:id`
+**Request Body:**
+```json
+
+```
+**Response:**
+```json
+{
+  "message": "Appointment deleted successfully."
+}
+```
+
+#### 6. Update an appointment made by the user
+**Endpoint:** `PUT /api/appointment/:id`
+**Request Body:**
+```json
+{
+  "hospitalId": "678e2a0572a92cc11e42d239",
+  "doctorId": "678e2a8372a92cc11e42d23b",
+  "date": "2024-04-01T10:30:00.000Z"
+}
+```
+**Response:**
+```json
+{
+  "message": "Appointment updated successfully.",
+  "appointment": {
+    "_id": "67a1c63584dca27d63166f7c",
+    "userId": "67a1c2dddcabd418c7845259",
+    "hospitalId": "678e2a0572a92cc11e42d239",
+    "doctorId": "678e2a8372a92cc11e42d23b",
+    "date": "2024-04-01T10:30:00.000Z",
+    "status": "Pending",
+    "createdAt": "2025-02-04T07:48:05.400Z",
+    "updatedAt": "2025-02-04T07:53:52.040Z",
+    "__v": 0
+  }
+}
+```
+
 ### Hospital Management
 
-#### 3. Register a New Hospital Admin
-**Endpoint:** `POST /api/hospital/register`
+#### 7. Register a New Hospital Admin
+**Endpoint:** `POST /api/admin/register`
 **Request Body:**
 ```json
 {
@@ -116,8 +284,8 @@ module.exports = mongoose.model('HospitalAdmin', HospitalAdminSchema);
 }
 ```
 
-#### 4. Hospital Admin Login
-**Endpoint:** `POST /api/hospital/login`
+#### 8. Hospital Admin Login
+**Endpoint:** `POST /api/admin/login`
 **Request Body:**
 ```json
 {
