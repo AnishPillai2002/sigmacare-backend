@@ -26,34 +26,98 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
 const UserSchema = new mongoose.Schema({
-    name: { type: String, required: true },
+    username: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    role: { type: String, enum: ['patient', 'admin'], required: true },
+    phone: { type: String },
 }, { timestamps: true });
 
+// Password hashing before saving
 UserSchema.pre('save', async function(next) {
-    if (this.isModified('password')) {
-        this.password = await bcrypt.hash(this.password, 10);
-    }
+    if (!this.isModified('password')) return next();
+    this.password = await bcrypt.hash(this.password, 10);
     next();
 });
 
 module.exports = mongoose.model('User', UserSchema);
+
 ```
 
 ### 2. Hospital Admin Schema
 ```javascript
+const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
+
 const HospitalAdminSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     hospitalId: { type: mongoose.Schema.Types.ObjectId, ref: 'Hospital', required: true },
-    isVerified: { type: Boolean, default: false },
+    isVerified: { type: Boolean, default: false }, // Verification status field
 }, { timestamps: true });
+
+// Hash password before saving
+HospitalAdminSchema.pre('save', async function (next) {
+    if (!this.isModified('password')) return next(); // Prevent rehashing
+    this.password = await bcrypt.hash(this.password, 10);
+    next();
+});
+
+
+// Method to check if password is correct
+HospitalAdminSchema.methods.comparePassword = async function(password) {
+    return await bcrypt.compare(password, this.password);
+};
 
 module.exports = mongoose.model('HospitalAdmin', HospitalAdminSchema);
 ```
 
+### 3. Hospital Schema
+```javascript
+const mongoose = require('mongoose');
+
+const HospitalSchema = new mongoose.Schema({
+    name: { type: String, required: true },
+    email: { type: String, required: true },
+    contact: { type: String, required: true },
+    city: { type: String, required: true },
+    state: { type: String, required: true },
+    address: { type: String, required:true },
+}, { timestamps: true });
+
+module.exports = mongoose.model('Hospital', HospitalSchema);
+
+```
+
+### 5. Doctor Schema
+```javascript
+const mongoose = require('mongoose');
+
+const DoctorSchema = new mongoose.Schema({
+    name: { type: String, required: true },
+    hospitalId: { type: String, required: true },  // store hospitalId as a string
+    specialization: { type: String, required: true },
+    experience: { type: Number },
+    contact: { type: String },
+}, { timestamps: true });
+
+module.exports = mongoose.model('Doctor', DoctorSchema);
+```
+
+### 5. Appointment Schema
+```javascript
+const mongoose = require('mongoose');
+
+const AppointmentSchema = new mongoose.Schema({
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }, // Changed to ObjectId
+    hospitalId: { type: String, required: true },
+    doctorId: { type: String, required: true },
+    date: { type: Date, required: true },
+    status: { type: String, enum: ['Pending', 'Confirmed', 'Cancelled'], default: 'Pending' },
+}, { timestamps: true });
+
+module.exports = mongoose.model('Appointment', AppointmentSchema);
+
+```
 ---
 
 ## API Endpoints
