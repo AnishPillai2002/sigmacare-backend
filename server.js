@@ -6,7 +6,7 @@ const cors = require('cors');
 const { InfluxDB } = require("@influxdata/influxdb-client");
 
 const userRoutes = require('./routes/userRoutes/user');
-const adminRoutes = require('./routes/hospital_admin_api');
+const adminRoutes = require('./routes/adminRoutes/hospital_admin_api');
 const apiRoutes = require('./routes/userRoutes/api');
 const appointmentRoutes = require('./routes/userRoutes/appointments_api');
 const sensorRoutes = require("./routes/sensorRoutes/sensor_api"); // ✅ Import InfluxDB sensor API

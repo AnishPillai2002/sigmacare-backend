@@ -1,9 +1,14 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
+
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const Hospital = require('../models/Hospital');
-const HospitalAdmin = require('../models/HospitalAdmin');
+const Doctor = require('../../models/Doctor'); 
+const Hospital = require('../../models/Hospital'); 
+const HospitalAdmin = require('../../models/HospitalAdmin'); 
+
+const authenticateToken = require('../../middlewares/authenticateHospitalAdminToken');
+
 
 
 // Admin Registration
@@ -71,23 +76,50 @@ router.post('/login', async (req, res) => {
     }
 });
 
+
+// Middleware to validate doctor input data
+const validateDoctorData = (req, res, next) => {
+    const { name, hospitalId, specialization, experience, contact } = req.body;
+
+    if (!name || !hospitalId || !specialization || experience == null || !contact) {
+        return res.status(400).json({ error: 'All fields (name, hospitalId, specialization, experience, contact) are required.' });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(hospitalId)) {
+        return res.status(400).json({ error: 'Invalid hospital ID format.' });
+    }
+
+    next();
+};
+
+
+// Add New Doctor (Protected Route)
+router.post('/add-doctor', authenticateToken, async (req, res) => {
+    const { name, hospitalId, specialization, experience, contact } = req.body;
+
+    try {
+        // Check if the hospital exists
+        const hospital = await Hospital.findById(hospitalId);
+        if (!hospital) {
+            return res.status(404).json({ error: 'Hospital not found.' });
+        }
+
+        // Create and save the new doctor
+        const newDoctor = new Doctor({
+            name,
+            hospitalId,
+            specialization,
+            experience,
+            contact
+        });
+
+        await newDoctor.save();
+        res.status(201).json({ message: 'Doctor added successfully.', doctor: newDoctor });
+
+    } catch (error) {
+        console.error('Error adding doctor:', error);
+        res.status(500).json({ error: 'Internal server error.' });
+    }
+});
+
 module.exports = router;
-// Get all appointments for a hospital admin
-// router.get('/admin/appointments', authenticateHospitalAdminToken, async (req, res) => {
-//     try {
-//         const { hospitalId } = req.admin; // Extract hospitalId from the JWT token
-
-//         const appointments = await Appointment.find(new mongoose.Types.ObjectId(hospitalId));
-
-//         if (!appointments || appointments.length === 0) {
-//             return res.status(404).json({ message: 'No appointments found for this hospital.' });
-//         }
-
-//         res.status(200).json({ appointments });
-//     } catch (error) {
-//         console.error('Error fetching appointments:', error);
-//         res.status(500).json({ error: 'Internal server error' });
-//     }
-// });
-
-
