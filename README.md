@@ -129,7 +129,7 @@ module.exports = mongoose.model('Appointment', AppointmentSchema);
 **Request Body:**
 ```json
 {
-  "name": "John Doe",
+  "username": "John Doe",
   "email": "john@example.com",
   "password": "securepassword",
   "phone": "number"
@@ -326,6 +326,136 @@ module.exports = mongoose.model('Appointment', AppointmentSchema);
 }
 ```
 
+#### 7. 📌 Add a Patient
+
+**Endpoint:** `POST /api/patients/`
+
+**Description:** Adds a new patient to the system.
+
+**Headers:**
+
+```json
+{
+  "Authorization": "Bearer <token>"
+}
+
+```
+
+**Body:**
+
+```json
+{
+  "name": "John Doe",
+  "age": 65,
+  "medical_conditions": ["Diabetes", "Hypertension"],
+  "device_id": "DEVICE123"
+}
+
+```
+
+**Response:**
+
+```json
+{
+  "message": "Patient added successfully",
+  "patient": { ... }
+}
+
+```
+
+----------
+
+#### 8. 📌 Get All Patients
+
+**Endpoint:** `GET /api/patients/`
+
+**Headers:**
+
+```json
+{
+  "Authorization": "Bearer <token>"
+}
+
+```
+
+**Response:**
+
+```json
+[
+  {
+    "_id": "65a3cfe2b2c56f0012f78c8e",
+    "name": "John Doe",
+    "age": 65,
+    "medical_conditions": ["Diabetes"],
+    "device_id": "DEVICE123"
+  }
+]
+
+```
+
+----------
+
+#### 9. 📌 Get a Patient by ID
+
+**Endpoint:** `GET /api/patients/:id`
+
+**Response:**
+
+```json
+{
+  "_id": "65a3cfe2b2c56f0012f78c8e",
+  "name": "John Doe",
+  "age": 65,
+  "medical_conditions": ["Diabetes"],
+  "device_id": "DEVICE123"
+}
+
+```
+
+----------
+
+#### 10. 📌 Update a Patient
+
+**Endpoint:** `PUT /api/patients/:id`
+
+**Body:**
+
+```json
+{
+  "name": "John Smith",
+  "age": 68,
+  "medical_conditions": ["Hypertension"],
+  "device_id": "NEWDEVICE123"
+}
+
+```
+
+**Response:**
+
+```json
+{
+  "message": "Patient updated successfully",
+  "patient": { ... }
+}
+
+```
+
+----------
+#### 11. 📌 Delete a Patient
+
+**Endpoint:** `DELETE /api/patients/:id`
+
+**Response:**
+
+```json
+{
+  "message": "Patient deleted successfully"
+}
+
+```
+
+----------
+
 ### Hospital Management
 
 #### 7. Register a New Hospital Admin
@@ -410,5 +540,5 @@ This project is licensed under the **MIT License**.
 ---
 
 ## Contact
-For any queries, reach out at [your-email@example.com](mailto:your-email@example.com).
+For any queries, reach out at [your-email@example.com](mailto:anishpillai2002@gmail.com).
 

@@ -10,6 +10,7 @@ const adminRoutes = require('./routes/adminRoutes/hospital_admin_api');
 const apiRoutes = require('./routes/userRoutes/api');
 const appointmentRoutes = require('./routes/userRoutes/appointments_api');
 const sensorRoutes = require("./routes/sensorRoutes/sensor_api"); // ✅ Import InfluxDB sensor API
+const patientRoutes = require('./routes/userRoutes/patient_api');
 
 const app = express();
 
@@ -23,7 +24,7 @@ app.use('/api', apiRoutes);
 app.use('/api/appointment',appointmentRoutes);
 app.use('/api/admin', adminRoutes);
 app.use("/api/sensor-data", sensorRoutes); // ✅ Sensor Data API (InfluxDB)
-
+app.use("/api/patients", patientRoutes); // ✅ Patient API
 
 
 
