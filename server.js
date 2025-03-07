@@ -7,7 +7,7 @@ const { InfluxDB } = require("@influxdata/influxdb-client");
 
 const userRoutes = require('./routes/userRoutes/user');
 const adminRoutes = require('./routes/adminRoutes/hospital_admin_api');
-const apiRoutes = require('./routes/userRoutes/api');
+const apiRoutes = require('./routes/userRoutes/hospital_api');
 const appointmentRoutes = require('./routes/userRoutes/appointments_api');
 const sensorRoutes = require('./routes/deviceRoutes/device_api'); // ✅ Import InfluxDB sensor API
 const patientRoutes = require('./routes/userRoutes/patient_api');

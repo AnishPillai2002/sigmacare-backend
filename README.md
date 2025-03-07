@@ -1,140 +1,71 @@
-# SigmaCare Health Management System
+# SigmaCare Backend API Documentation
 
-## Overview
-The **SigmaCare Healthcare Management System** is a web-based application designed to manage hospital operations efficiently. It includes user and hospital login systems, patient records, appointment scheduling, and more. The backend is powered by **Node.js, Express, and MongoDB**.
+## 📋 Table of Contents
+1. [Introduction](#introduction)
+2. [Getting Started](#getting-started)
+3. [Authentication](#authentication)
+4. [Hospital Management](#hospital-management)
+5. [Patient Management](#patient-management)
+6. [Appointment Management](#appointment-management)
+7. [Device Management](#device-management)
+8. [Sensor Data Management](#sensor-data-management)
 
-## Features
-- **User Authentication** (Patients & Hospital Admins)
-- **Secure JWT-based Login System**
-- **Hospital & Patient Management**
-- **MongoDB Database Integration**
-- **API Endpoints for CRUD Operations**
+## 🚀 Introduction
+SigmaCare Backend is a comprehensive healthcare management system that provides APIs for managing hospitals, patients, appointments, and IoT device data.
 
-## Technologies Used
-- **Backend:** Node.js, Express.js
-- **Database:** MongoDB with Mongoose ODM
-- **Authentication:** JWT (JSON Web Tokens) & Bcrypt.js for password hashing
-- **API Testing:** Postman
+## 💻 Getting Started
 
----
+### Prerequisites
+- Node.js & npm
+- MongoDB
+- InfluxDB (for sensor data)
 
-## Database Schema
+### Installation
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/sigmacare-backend.git
+   cd sigmacare-backend
+   ```
 
-### 1. User Schema
-```javascript
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-const UserSchema = new mongoose.Schema({
-    username: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-    phone: { type: String },
-}, { timestamps: true });
+3. Configure environment variables:
+   Create a `.env` file with:
+   ```env
+   MONGO_URI=your_mongodb_connection_string
+   JWT_SECRET=your_jwt_secret
+   INFLUX_URL=your_influxdb_url
+   INFLUX_TOKEN=your_influxdb_token
+   INFLUX_ORG=your_organization
+   INFLUX_BUCKET=your_bucket
+   INFLUX_MEASUREMENT=your_measurement
+   ```
 
-// Password hashing before saving
-UserSchema.pre('save', async function(next) {
-    if (!this.isModified('password')) return next();
-    this.password = await bcrypt.hash(this.password, 10);
-    next();
-});
+4. Start the server:
+   ```bash
+   npm start
+   ```
 
-module.exports = mongoose.model('User', UserSchema);
+## 🔐 Authentication
 
+### Register User
+```http
+POST /api/user/register
 ```
 
-### 2. Hospital Admin Schema
-```javascript
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
-
-const HospitalAdminSchema = new mongoose.Schema({
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-    hospitalId: { type: mongoose.Schema.Types.ObjectId, ref: 'Hospital', required: true },
-    isVerified: { type: Boolean, default: false }, // Verification status field
-}, { timestamps: true });
-
-// Hash password before saving
-HospitalAdminSchema.pre('save', async function (next) {
-    if (!this.isModified('password')) return next(); // Prevent rehashing
-    this.password = await bcrypt.hash(this.password, 10);
-    next();
-});
-
-
-// Method to check if password is correct
-HospitalAdminSchema.methods.comparePassword = async function(password) {
-    return await bcrypt.compare(password, this.password);
-};
-
-module.exports = mongoose.model('HospitalAdmin', HospitalAdminSchema);
-```
-
-### 3. Hospital Schema
-```javascript
-const mongoose = require('mongoose');
-
-const HospitalSchema = new mongoose.Schema({
-    name: { type: String, required: true },
-    email: { type: String, required: true },
-    contact: { type: String, required: true },
-    city: { type: String, required: true },
-    state: { type: String, required: true },
-    address: { type: String, required:true },
-}, { timestamps: true });
-
-module.exports = mongoose.model('Hospital', HospitalSchema);
-
-```
-
-### 5. Doctor Schema
-```javascript
-const mongoose = require('mongoose');
-
-const DoctorSchema = new mongoose.Schema({
-    name: { type: String, required: true },
-    hospitalId: { type: String, required: true },  // store hospitalId as a string
-    specialization: { type: String, required: true },
-    experience: { type: Number },
-    contact: { type: String },
-}, { timestamps: true });
-
-module.exports = mongoose.model('Doctor', DoctorSchema);
-```
-
-### 5. Appointment Schema
-```javascript
-const mongoose = require('mongoose');
-
-const AppointmentSchema = new mongoose.Schema({
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }, // Changed to ObjectId
-    hospitalId: { type: String, required: true },
-    doctorId: { type: String, required: true },
-    date: { type: Date, required: true },
-    status: { type: String, enum: ['Pending', 'Confirmed', 'Cancelled'], default: 'Pending' },
-}, { timestamps: true });
-
-module.exports = mongoose.model('Appointment', AppointmentSchema);
-
-```
----
-
-## API Endpoints
-
-### Authentication
-
-#### 1. Register a New User
-**Endpoint:** `POST /api/user/register`
 **Request Body:**
 ```json
 {
   "username": "John Doe",
   "email": "john@example.com",
   "password": "securepassword",
-  "phone": "number"
+  "phone": "1234567890"
 }
 ```
+
 **Response:**
 ```json
 {
@@ -142,8 +73,11 @@ module.exports = mongoose.model('Appointment', AppointmentSchema);
 }
 ```
 
-#### 2. Login User
-**Endpoint:** `POST /api/user/login`
+### Login User
+```http
+POST /api/user/login
+```
+
 **Request Body:**
 ```json
 {
@@ -151,198 +85,119 @@ module.exports = mongoose.model('Appointment', AppointmentSchema);
   "password": "securepassword"
 }
 ```
+
 **Response:**
 ```json
 {
-  "token": "jwt-token-here"
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 }
 ```
 
-#### 3. Get All Hospitals
-**Endpoint:** `GET /api/hospitals`
+## 🏥 Hospital Management
+
+### Register Hospital Admin
+```http
+POST /api/admin/register
+```
+
 **Request Body:**
 ```json
-
-```
-**Response:**
-```json
-[
-  {
-    "_id": "678e29f172a92cc11e42d238",
-    "name": "City Health Hospital",
-    "email": "contact@cityhealth.com",
+{
+  "email": "admin@hospital.com",
+  "password": "securepassword",
+  "hospital": {
+    "name": "City Hospital",
+    "email": "contact@cityhospital.com",
     "contact": "1234567890",
     "city": "New York",
     "state": "NY",
-    "address": "123 Main St, New York, NY 10001"
-  },
-  {
-    "_id": "678e2a0572a92cc11e42d239",
-    "name": "Metro Medical Center",
-    "email": "info@metromedical.com",
-    "contact": "0987654321",
-    "city": "Los Angeles",
-    "state": "CA",
-    "address": "456 Elm St, Los Angeles, CA 90001"
-  },
-]
-```
-
-#### 4. Get All Doctors in a Hospitals
-**Endpoint:** `GET /api/hospitals/:hospitalId/doctors`
-**Request Body:**
-```json
-
-```
-**Response:**
-```json
-[
-  {
-    "_id": "678e2aa672a92cc11e42d23c",
-    "name": "Dr. Robert Smith",
-    "hospitalId": "678e29f172a92cc11e42d238",
-    "specialization": "Neurology",
-    "experience": 8,
-    "contact": "0987654321"
-  }
-]
-```
-
-#### 5. Book an Appointment
-**Endpoint:** `POST /api/appointment/`
-**Request Body:**
-```json
-{
-  "hospitalId": "678e2a0572a92cc11e42d239",
-  "doctorId": "678e2a8372a92cc11e42d23b",
-  "date": "2024-02-05T10:30:00.000Z"
-}
-
-```
-**Response:**
-```json
-{
-  "message": "Appointment booked successfully",
-  "appointment": {
-    "userId": "67a1c2dddcabd418c7845259",
-    "hospitalId": "678e2a0572a92cc11e42d239",
-    "doctorId": "678e2a8372a92cc11e42d23b",
-    "date": "2024-02-05T10:30:00.000Z",
-    "status": "Pending",
-    "_id": "67a1c63584dca27d63166f7c",
-    "createdAt": "2025-02-04T07:48:05.400Z",
-    "updatedAt": "2025-02-04T07:48:05.400Z",
-    "__v": 0
+    "address": "123 Main St"
   }
 }
 ```
 
-#### 6. Get all the appointments made by the user
-**Endpoint:** `GET /api/appointment/`
-**Request Body:**
-```json
-
-```
 **Response:**
 ```json
 {
-  "appointments": [
-    {
-      "_id": "67a1c63584dca27d63166f7c",
-      "userId": "67a1c2dddcabd418c7845259",
-      "hospitalId": "678e2a0572a92cc11e42d239",
-      "doctorId": "678e2a8372a92cc11e42d23b",
-      "date": "2024-02-05T10:30:00.000Z",
-      "status": "Pending",
-      "createdAt": "2025-02-04T07:48:05.400Z",
-      "updatedAt": "2025-02-04T07:48:05.400Z",
-      "__v": 0
-    }
-  ]
+  "message": "Admin registered successfully, pending verification"
 }
 ```
 
-#### 6. Get a single appointment made by the user
-**Endpoint:** `GET /api/appointment/:id`
-**Request Body:**
-```json
-
-```
-**Response:**
-```json
-{
-  "appointment": {
-    "_id": "67a1c63584dca27d63166f7c",
-    "userId": "67a1c2dddcabd418c7845259",
-    "hospitalId": "678e2a0572a92cc11e42d239",
-    "doctorId": "678e2a8372a92cc11e42d23b",
-    "date": "2024-02-05T10:30:00.000Z",
-    "status": "Pending",
-    "createdAt": "2025-02-04T07:48:05.400Z",
-    "updatedAt": "2025-02-04T07:48:05.400Z",
-    "__v": 0
-  }
-}
+### Hospital Admin Login
+```http
+POST /api/admin/login
 ```
 
-#### 6. Delete an appointment made by the user
-**Endpoint:** `DELETE /api/appointment/:id`
-**Request Body:**
-```json
-
-```
-**Response:**
-```json
-{
-  "message": "Appointment deleted successfully."
-}
-```
-
-#### 6. Update an appointment made by the user
-**Endpoint:** `PUT /api/appointment/:id`
 **Request Body:**
 ```json
 {
-  "hospitalId": "678e2a0572a92cc11e42d239",
-  "doctorId": "678e2a8372a92cc11e42d23b",
-  "date": "2024-04-01T10:30:00.000Z"
+  "email": "admin@hospital.com",
+  "password": "securepassword",
+  "hospitalId": "603d9c7f8c4b2b0015b5e982"
 }
 ```
+
 **Response:**
 ```json
 {
-  "message": "Appointment updated successfully.",
-  "appointment": {
-    "_id": "67a1c63584dca27d63166f7c",
-    "userId": "67a1c2dddcabd418c7845259",
-    "hospitalId": "678e2a0572a92cc11e42d239",
-    "doctorId": "678e2a8372a92cc11e42d23b",
-    "date": "2024-04-01T10:30:00.000Z",
-    "status": "Pending",
-    "createdAt": "2025-02-04T07:48:05.400Z",
-    "updatedAt": "2025-02-04T07:53:52.040Z",
-    "__v": 0
-  }
+  "message": "Login successful",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 }
 ```
 
-#### 7. 📌 Add a Patient
-
-**Endpoint:** `POST /api/patients/`
-
-**Description:** Adds a new patient to the system.
+### Add Doctor
+```http
+POST /api/admin/add-doctor
+```
 
 **Headers:**
+```json
+{
+  "Authorization": "Bearer <admin_token>"
+}
+```
 
+**Request Body:**
+```json
+{
+  "name": "Dr. Robert Smith",
+  "hospitalId": "603d9c7f8c4b2b0015b5e982",
+  "specialization": "Cardiology",
+  "experience": 10,
+  "contact": "9876543210"
+}
+```
+
+**Response:**
+```json
+{
+  "message": "Doctor added successfully",
+  "doctor": {
+    "_id": "603d9c7f8c4b2b0015b5e983",
+    "name": "Dr. Robert Smith",
+    "hospitalId": "603d9c7f8c4b2b0015b5e982",
+    "specialization": "Cardiology",
+    "experience": 10,
+    "contact": "9876543210"
+  }
+}
+```
+
+## 👨‍👩‍👦 Patient Management
+
+### Add Patient
+```http
+POST /api/patients
+```
+
+**Headers:**
 ```json
 {
   "Authorization": "Bearer <token>"
 }
-
 ```
 
-**Body:**
-
+**Request Body:**
 ```json
 {
   "name": "John Doe",
@@ -350,36 +205,36 @@ module.exports = mongoose.model('Appointment', AppointmentSchema);
   "medical_conditions": ["Diabetes", "Hypertension"],
   "device_id": "DEVICE123"
 }
-
 ```
 
 **Response:**
-
 ```json
 {
   "message": "Patient added successfully",
-  "patient": { ... }
+  "patient": {
+    "_id": "65a3cfe2b2c56f0012f78c8e",
+    "name": "John Doe",
+    "age": 65,
+    "medical_conditions": ["Diabetes", "Hypertension"],
+    "device_id": "DEVICE123",
+    "caretaker_id": "603d9c7f8c4b2b0015b5e984"
+  }
 }
-
 ```
 
-----------
-
-#### 8. 📌 Get All Patients
-
-**Endpoint:** `GET /api/patients/`
+### Get All Patients
+```http
+GET /api/patients
+```
 
 **Headers:**
-
 ```json
 {
   "Authorization": "Bearer <token>"
 }
-
 ```
 
 **Response:**
-
 ```json
 [
   {
@@ -390,17 +245,21 @@ module.exports = mongoose.model('Appointment', AppointmentSchema);
     "device_id": "DEVICE123"
   }
 ]
-
 ```
 
-----------
+### Get Patient by ID
+```http
+GET /api/patients/:id
+```
 
-#### 9. 📌 Get a Patient by ID
-
-**Endpoint:** `GET /api/patients/:id`
+**Headers:**
+```json
+{
+  "Authorization": "Bearer <token>"
+}
+```
 
 **Response:**
-
 ```json
 {
   "_id": "65a3cfe2b2c56f0012f78c8e",
@@ -409,17 +268,21 @@ module.exports = mongoose.model('Appointment', AppointmentSchema);
   "medical_conditions": ["Diabetes"],
   "device_id": "DEVICE123"
 }
-
 ```
 
-----------
+### Update Patient
+```http
+PUT /api/patients/:id
+```
 
-#### 10. 📌 Update a Patient
+**Headers:**
+```json
+{
+  "Authorization": "Bearer <token>"
+}
+```
 
-**Endpoint:** `PUT /api/patients/:id`
-
-**Body:**
-
+**Request Body:**
 ```json
 {
   "name": "John Smith",
@@ -427,118 +290,337 @@ module.exports = mongoose.model('Appointment', AppointmentSchema);
   "medical_conditions": ["Hypertension"],
   "device_id": "NEWDEVICE123"
 }
-
 ```
 
 **Response:**
-
 ```json
 {
   "message": "Patient updated successfully",
-  "patient": { ... }
-}
-
-```
-
-----------
-#### 11. 📌 Delete a Patient
-
-**Endpoint:** `DELETE /api/patients/:id`
-
-**Response:**
-
-```json
-{
-  "message": "Patient deleted successfully"
-}
-
-```
-
-----------
-
-### Hospital Management
-
-#### 7. Register a New Hospital Admin
-**Endpoint:** `POST /api/admin/register`
-**Request Body:**
-```json
-{
-  "email": "admin@hospital.com",
-  "password": "securepassword",
-  "hospital": {
-    "name": "City Hospital",
-    "location": "New York"
+  "patient": {
+    "_id": "65a3cfe2b2c56f0012f78c8e",
+    "name": "John Smith",
+    "age": 68,
+    "medical_conditions": ["Hypertension"],
+    "device_id": "NEWDEVICE123"
   }
 }
 ```
-**Response:**
+
+## 📅 Appointment Management
+
+### Book Appointment
+```http
+POST /api/appointments
+```
+
+**Headers:**
 ```json
 {
-  "message": "Admin registered successfully, pending verification"
+  "Authorization": "Bearer <token>"
 }
 ```
 
-#### 8. Hospital Admin Login
-**Endpoint:** `POST /api/admin/login`
 **Request Body:**
 ```json
 {
-  "email": "admin@hospital.com",
-  "password": "securepassword",
-  "hospitalId": "603d9c7f8c4b2b0015b5e982"
+  "hospitalId": "603d9c7f8c4b2b0015b5e982",
+  "doctorId": "603d9c7f8c4b2b0015b5e983",
+  "date": "2024-02-05T10:30:00.000Z"
 }
 ```
+
 **Response:**
 ```json
 {
-  "message": "Login successful",
-  "token": "jwt-token-here"
+  "message": "Appointment booked successfully",
+  "appointment": {
+    "_id": "67a1c63584dca27d63166f7c",
+    "userId": "67a1c2dddcabd418c7845259",
+    "hospitalId": "603d9c7f8c4b2b0015b5e982",
+    "doctorId": "603d9c7f8c4b2b0015b5e983",
+    "date": "2024-02-05T10:30:00.000Z",
+    "status": "Pending"
+  }
 }
 ```
 
----
+### Get User's Appointments
+```http
+GET /api/appointments
+```
 
-## Installation
-### Prerequisites
-- Node.js & npm
-- MongoDB installed and running
+**Headers:**
+```json
+{
+  "Authorization": "Bearer <token>"
+}
+```
 
-### Setup Instructions
-1. Clone the repository:
-   ```sh
-   git clone https://github.com/yourusername/healthcare-management.git
-   cd healthcare-management
-   ```
-2. Install dependencies:
-   ```sh
-   npm install
-   ```
-3. Create a `.env` file and configure:
-   ```sh
-   MONGO_URI=your_mongodb_connection_string
-   JWT_SECRET=your_secret_key
-   ```
-4. Start the server:
-   ```sh
-   npm start
-   ```
+**Response:**
+```json
+{
+  "appointments": [
+    {
+      "_id": "67a1c63584dca27d63166f7c",
+      "userId": "67a1c2dddcabd418c7845259",
+      "hospitalId": "603d9c7f8c4b2b0015b5e982",
+      "doctorId": "603d9c7f8c4b2b0015b5e983",
+      "date": "2024-02-05T10:30:00.000Z",
+      "status": "Pending"
+    }
+  ]
+}
+```
 
----
+### Get Appointment by ID
+```http
+GET /api/appointments/:id
+```
 
-## Contributing
+**Headers:**
+```json
+{
+  "Authorization": "Bearer <token>"
+}
+```
+
+**Response:**
+```json
+{
+  "appointment": {
+    "_id": "67a1c63584dca27d63166f7c",
+    "userId": "67a1c2dddcabd418c7845259",
+    "hospitalId": "603d9c7f8c4b2b0015b5e982",
+    "doctorId": "603d9c7f8c4b2b0015b5e983",
+    "date": "2024-02-05T10:30:00.000Z",
+    "status": "Pending"
+  }
+}
+```
+
+### Update Appointment
+```http
+PUT /api/appointments/:id
+```
+
+**Headers:**
+```json
+{
+  "Authorization": "Bearer <token>"
+}
+```
+
+**Request Body:**
+```json
+{
+  "date": "2024-04-01T10:30:00.000Z"
+}
+```
+
+**Response:**
+```json
+{
+  "message": "Appointment updated successfully",
+  "appointment": {
+    "_id": "67a1c63584dca27d63166f7c",
+    "userId": "67a1c2dddcabd418c7845259",
+    "hospitalId": "603d9c7f8c4b2b0015b5e982",
+    "doctorId": "603d9c7f8c4b2b0015b5e983",
+    "date": "2024-04-01T10:30:00.000Z",
+    "status": "Pending"
+  }
+}
+```
+
+### Delete Appointment
+```http
+DELETE /api/appointments/:id
+```
+
+**Headers:**
+```json
+{
+  "Authorization": "Bearer <token>"
+}
+```
+
+**Response:**
+```json
+{
+  "message": "Appointment deleted successfully"
+}
+```
+
+## 📱 Device Management
+
+### Register Device
+```http
+POST /api/device-register
+```
+
+**Headers:**
+```json
+{
+  "Authorization": "Bearer <token>"
+}
+```
+
+**Request Body:**
+```json
+{
+  "device_code": "DEVICE123",
+  "device_secret": "secret_key_here"
+}
+```
+
+**Response:**
+```json
+{
+  "message": "Device registered successfully",
+  "device": {
+    "device_code": "DEVICE123",
+    "isRegistered": true,
+    "caretaker_id": "603d9c7f8c4b2b0015b5e984"
+  }
+}
+```
+
+## 📊 Sensor Data Management
+
+### Store Sensor Data
+```http
+POST /api/sensor-data
+```
+
+**Headers:**
+```json
+{
+  "device_code": "DEVICE123"
+}
+```
+
+**Request Body:**
+```json
+{
+  "device_code": "DEVICE123",
+  "accelX": 0.5,
+  "accelY": -0.2,
+  "accelZ": 9.8,
+  "gyroX": 0.1,
+  "gyroY": 0.2,
+  "gyroZ": -0.1
+}
+```
+
+**Response:**
+```json
+{
+  "message": "Sensor data stored successfully"
+}
+```
+
+### Get Sensor Data
+```http
+GET /api/sensor-data/:deviceId
+```
+
+**Headers:**
+```json
+{
+  "device_code": "DEVICE123"
+}
+```
+
+**Response:**
+```json
+[
+  {
+    "_time": "2024-02-04T10:00:00Z",
+    "_value": 0.5,
+    "deviceId": "DEVICE123",
+    "_field": "accelX"
+  },
+  {
+    "_time": "2024-02-04T10:00:00Z",
+    "_value": -0.2,
+    "deviceId": "DEVICE123",
+    "_field": "accelY"
+  }
+]
+```
+
+## 🔒 Security
+- All endpoints (except registration and login) require authentication
+- JWT tokens are used for authentication
+- Passwords are hashed using bcrypt
+- Device authentication is required for sensor data endpoints
+
+## 📝 Error Handling
+All endpoints return appropriate HTTP status codes:
+- 200: Success
+- 201: Created
+- 400: Bad Request
+- 401: Unauthorized
+- 403: Forbidden
+- 404: Not Found
+- 500: Internal Server Error
+
+## 📚 Models
+
+### User
+- username (String, required)
+- email (String, required, unique)
+- password (String, required)
+- phone (String, required)
+
+### Hospital
+- name (String, required)
+- email (String, required)
+- contact (String, required)
+- city (String, required)
+- state (String, required)
+- address (String, required)
+
+### Doctor
+- name (String, required)
+- hospitalId (String, required)
+- specialization (String, required)
+- experience (Number)
+- contact (String)
+
+### Patient
+- name (String, required)
+- age (Number, required)
+- caretaker_id (ObjectId, required)
+- medical_conditions (Array of Strings)
+- device_id (String)
+
+### Appointment
+- userId (ObjectId, required)
+- hospitalId (String, required)
+- doctorId (String, required)
+- date (Date, required)
+- status (String, enum: ['Pending', 'Confirmed', 'Cancelled'])
+
+### Device
+- device_name (String, required)
+- device_code (String, required, unique)
+- device_secret (String, required, unique)
+- caretaker_id (ObjectId)
+- isRegistered (Boolean)
+
+## 🤝 Contributing
 1. Fork the repository
-2. Create a new branch (`git checkout -b feature-name`)
-3. Commit changes (`git commit -m 'Add new feature'`)
-4. Push to the branch (`git push origin feature-name`)
-5. Open a Pull Request
+2. Create a new branch (`git checkout -b feature/improvement`)
+3. Commit your changes (`git commit -am 'Add new feature'`)
+4. Push to the branch (`git push origin feature/improvement`)
+5. Create a Pull Request
 
----
+## 📄 License
+This project is licensed under the MIT License.
 
-## License
-This project is licensed under the **MIT License**.
-
----
-
-## Contact
-For any queries, reach out at [your-email@example.com](mailto:anishpillai2002@gmail.com).
+## 📞 Contact
+For any queries or support, please contact:
+- Email: anishpillai2002@gmail.com
+- GitHub: [Your GitHub Profile](https://github.com/AnishPillai2002)
 

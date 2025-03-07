@@ -1,9 +1,7 @@
 const express = require('express');
 const authenticateToken = require('../../middlewares/authenticateToken');
-const mongoose = require('mongoose');
 const Hospital = require('../../models/Hospital');
 const Doctor = require('../../models/Doctor');
-const Appointment = require('../../models/Appointment');
 const router = express.Router();
 
 // Get all hospitals
