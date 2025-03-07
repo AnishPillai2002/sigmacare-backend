@@ -376,7 +376,7 @@ GET /api/appointment
 
 ### Get Appointment by ID
 ```http
-GET /api/appointments/:id
+GET /api/appointment/:id
 ```
 
 **Headers:**
