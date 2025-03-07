@@ -4,7 +4,7 @@ const Device = require("../../models/Device");
 
 const router = express.Router();
 
-// 📌 Register a Device (Caretaker must authenticate)
+// 📌 Register a new Device (Caretaker must authenticate)
 router.post("/", authenticateToken, async (req, res) => {
     try {
         const { device_code, device_secret } = req.body;
@@ -36,5 +36,8 @@ router.post("/", authenticateToken, async (req, res) => {
         res.status(500).json({ message: "Internal Server Error" });
     }
 });
+
+// 📌 Get all Devices
+
 
 module.exports = router;

@@ -7,7 +7,7 @@ const { InfluxDB } = require("@influxdata/influxdb-client");
 
 const userRoutes = require('./routes/userRoutes/user');
 const adminRoutes = require('./routes/adminRoutes/hospital_admin_api');
-const apiRoutes = require('./routes/userRoutes/hospital_api');
+const hospitalApiRoutes = require('./routes/userRoutes/hospital_api');
 const appointmentRoutes = require('./routes/userRoutes/appointments_api');
 const sensorRoutes = require('./routes/deviceRoutes/device_api'); // ✅ Import InfluxDB sensor API
 const patientRoutes = require('./routes/userRoutes/patient_api');
@@ -22,7 +22,7 @@ app.use(cors());
 
 // Routes
 app.use('/api/users', userRoutes);
-app.use('/api', apiRoutes);
+app.use('/api', hospitalApiRoutes);
 app.use('/api/appointment',appointmentRoutes);
 app.use('/api/admin', adminRoutes);
 app.use("/api/sensor-data", sensorRoutes); // ✅ Sensor Data API (InfluxDB)

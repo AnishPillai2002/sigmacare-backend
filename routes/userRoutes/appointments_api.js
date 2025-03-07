@@ -4,6 +4,9 @@ const mongoose = require('mongoose');
 const Appointment = require('../../models/Appointment');
 const router = express.Router();
 
+/*
+API to book, fetch, update, and delete appointments 
+*/
 
 // Book appointment
 router.post('/', authenticateToken, async (req, res) => {

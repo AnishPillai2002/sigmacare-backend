@@ -1,11 +1,13 @@
 const express = require('express');
 const authenticateToken = require('../../middlewares/authenticateToken');
-const mongoose = require('mongoose');
 const Patient = require('../../models/Patient');
 const router = express.Router();
 
+/*
+API to help caretakers manage patients
+*/
 
-// 📌 Add Patient
+// 📌 Add a Patient
 router.post("/", authenticateToken, async (req, res) => {
     try {
       const { name, age, medical_conditions, device_id } = req.body;
