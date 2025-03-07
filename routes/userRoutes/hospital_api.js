@@ -3,6 +3,7 @@ const authenticateToken = require('../../middlewares/authenticateToken');
 const Hospital = require('../../models/Hospital');
 const Doctor = require('../../models/Doctor');
 const router = express.Router();
+const mongoose = require('mongoose');
 
 /*
 API to fetch hospital and doctor details
@@ -66,6 +67,38 @@ router.get('/hospitals/:hospitalId/doctors', async (req, res) => {
     } catch (error) {
         console.error('Error fetching doctors:', error.message);
         res.status(500).json({ error: 'Internal server error.' });
+    }
+});
+
+// GET all doctors
+router.get('/doctors', async (req, res) => {
+    try {
+        const doctors = await Doctor.find().populate('hospitalId');
+        res.status(200).json(doctors);
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+});
+
+// GET doctor details by ID
+router.get('/doctors/:id', async (req, res) => {
+    try {
+        const doctorId = req.params.id;
+        
+        // Validate ObjectId
+        if (!mongoose.Types.ObjectId.isValid(doctorId)) {
+            return res.status(400).json({ message: 'Invalid doctor ID' });
+        }
+        
+        const doctor = await Doctor.findById(doctorId).populate('hospitalId');
+        
+        if (!doctor) {
+            return res.status(404).json({ message: 'Doctor not found' });
+        }
+        
+        res.status(200).json(doctor);
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message });
     }
 });
 
