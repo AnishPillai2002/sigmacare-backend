@@ -1,6 +1,8 @@
 const express = require("express");
 const { InfluxDB, Point } = require("@influxdata/influxdb-client"); // Import required InfluxDB modules
 
+const authenticateDevice = require('../../middlewares/authenticateDevice'); // ✅ Import authenticateDevice middleware
+
 const router = express.Router();
 
 // Get InfluxDB Client from environment variables
@@ -13,18 +15,18 @@ const writeApi = influxDB.getWriteApi(process.env.INFLUX_ORG, process.env.INFLUX
 const queryApi = influxDB.getQueryApi(process.env.INFLUX_ORG);
 
 // 📌 POST: Store sensor data in InfluxDB
-router.post("/", async (req, res) => {
+router.post("/", authenticateDevice, async (req, res) => {
   try {
-    const { deviceId, accelX, accelY, accelZ, gyroX, gyroY, gyroZ } = req.body;
+    const { device_code, accelX, accelY, accelZ, gyroX, gyroY, gyroZ } = req.body;
 
-    if (!deviceId || accelX === undefined || accelY === undefined || accelZ === undefined ||
+    if (!device_code || accelX === undefined || accelY === undefined || accelZ === undefined ||
         gyroX === undefined || gyroY === undefined || gyroZ === undefined) {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
     // Create the Point object for InfluxDB
     const point = new Point(process.env.INFLUX_MEASUREMENT)
-      .tag("deviceId", deviceId)
+      .tag("deviceId", device_code)
       .floatField("accelX", accelX)
       .floatField("accelY", accelY)
       .floatField("accelZ", accelZ)
@@ -45,7 +47,7 @@ router.post("/", async (req, res) => {
 });
 
 // 📌 GET: Retrieve sensor data from InfluxDB by deviceId
-router.get("/:deviceId", async (req, res) => {
+router.get("/:deviceId",authenticateDevice, async (req, res) => {
   try {
     const { deviceId } = req.params;
 
