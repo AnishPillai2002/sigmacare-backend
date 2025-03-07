@@ -21,18 +21,20 @@ SigmaCare Backend is a comprehensive healthcare management system that provides 
 - InfluxDB (for sensor data)
 
 ### Installation
-1. Clone the repository:
+1. Fork the repository
+
+2. Clone the repository:
    ```bash
    git clone https://github.com/yourusername/sigmacare-backend.git
    cd sigmacare-backend
    ```
 
-2. Install dependencies:
+3. Install dependencies:
    ```bash
    npm install
    ```
 
-3. Configure environment variables:
+4. Configure environment variables:
    Create a `.env` file with:
    ```env
    MONGO_URI=your_mongodb_connection_string
@@ -44,7 +46,7 @@ SigmaCare Backend is a comprehensive healthcare management system that provides 
    INFLUX_MEASUREMENT=your_measurement
    ```
 
-4. Start the server:
+5. Start the server:
    ```bash
    npm start
    ```
