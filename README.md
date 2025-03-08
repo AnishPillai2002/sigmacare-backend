@@ -135,7 +135,6 @@ POST /api/admin/login
 {
   "email": "admin@hospital.com",
   "password": "securepassword",
-  "hospitalId": "603d9c7f8c4b2b0015b5e982"
 }
 ```
 
@@ -162,11 +161,10 @@ POST /api/admin/add-doctor
 **Request Body:**
 ```json
 {
-  "name": "Dr. Robert Smith",
-  "hospitalId": "603d9c7f8c4b2b0015b5e982",
-  "specialization": "Cardiology",
-  "experience": 10,
-  "contact": "9876543210"
+  "name": "Antony Dasan",
+  "specialization": "Radiology",
+  "experience": 12,
+  "contact": "9876543215"
 }
 ```
 
@@ -176,14 +174,318 @@ POST /api/admin/add-doctor
   "message": "Doctor added successfully",
   "doctor": {
     "_id": "603d9c7f8c4b2b0015b5e983",
-    "name": "Dr. Robert Smith",
-    "hospitalId": "603d9c7f8c4b2b0015b5e982",
-    "specialization": "Cardiology",
-    "experience": 10,
-    "contact": "9876543210"
+    "name": "Antony Dasan",
+    "hospitalId": "67cbd1719a63d26518afbf9e",
+    "specialization": "Radiology",
+    "experience": 12,
+    "contact": "9876543215"
   }
 }
 ```
+
+### See All Doctors
+```http
+GET /api/admin/doctors
+```
+
+**Headers:**
+```json
+{
+  "Authorization": "Bearer <admin_token>"
+}
+```
+
+**Request Body:**
+```json
+
+```
+
+**Response:**
+```json
+{
+  "doctors": [
+    {
+      "_id": "67cbd40e2a018996de7e505e",
+      "name": "Antony Dasan",
+      "hospitalId": "67cbd1719a63d26518afbf9e",
+      "specialization": "Cardiology",
+      "experience": 12,
+      "contact": "9876543215",
+      "createdAt": "2025-03-08T05:22:22.535Z",
+      "updatedAt": "2025-03-08T05:22:22.535Z",
+      "__v": 0
+    },
+    {
+      "_id": "67cbd38d2a018996de7e505c",
+      "name": "Madhav Sigma",
+      "hospitalId": "67cbd1719a63d26518afbf9e",
+      "specialization": "Orthopedist",
+      "experience": 6,
+      "contact": "9876543213",
+      "createdAt": "2025-03-08T05:20:13.986Z",
+      "updatedAt": "2025-03-08T05:20:13.986Z",
+      "__v": 0
+    }
+  ]
+}
+```
+
+### Get Doctor Detail
+```http
+GET /api/admin/doctor/:doctorId
+```
+
+**Request Body:**
+```json
+
+```
+
+**Response:**
+```json
+{
+  "doctor": {
+    "_id": "67cbd40e2a018996de7e505e",
+    "name": "Antony Dasan",
+    "hospitalId": "67cbd1719a63d26518afbf9e",
+    "specialization": "Gynocology",
+    "experience": 12,
+    "contact": "9876543215",
+    "createdAt": "2025-03-08T05:22:22.535Z",
+    "updatedAt": "2025-03-08T05:22:22.535Z",
+    "__v": 0
+  }
+}
+```
+
+### Update Doctor Detail
+```http
+PUT /api/admin/doctor/:doctorId
+```
+
+**Request Body:**
+```json
+{
+  "name": "Antony Dasan",
+  "specialization": "Radiology",
+  "experience": 12,
+  "contact": "9876543215"
+}
+
+```
+
+**Response:**
+```json
+{
+  "doctor": {
+    "_id": "67cbd40e2a018996de7e505e",
+    "name": "Antony Dasan",
+    "hospitalId": "67cbd1719a63d26518afbf9e",
+    "specialization": "Gynocology",
+    "experience": 12,
+    "contact": "9876543215",
+    "createdAt": "2025-03-08T05:22:22.535Z",
+    "updatedAt": "2025-03-08T05:22:22.535Z",
+    "__v": 0
+  }
+}
+```
+
+### Add Doctor Schedule
+```http
+PUT /api/admin/create-schedule
+```
+
+**Request Body:**
+```json
+{
+    "date": "2025-03-10",
+    "doctorSlots": [
+        {
+            "doctorId": "67cbd30d586af44c6e387a37",
+            "maxAppointments": 5
+        },
+        {
+            "doctorId": "67cbd38d2a018996de7e505c",
+            "maxAppointments": 5
+        },
+        {
+            "doctorId": "67cbd40e2a018996de7e505e",
+            "maxAppointments": 5
+        }
+    ]
+}
+
+```
+
+**Response:**
+```json
+{
+  "message": "Schedule created successfully",
+  "schedule": {
+    "hospitalId": "67cbd1719a63d26518afbf9e",
+    "date": "2025-03-10",
+    "doctorSlots": [
+      {
+        "doctorId": "67cbd30d586af44c6e387a37",
+        "maxAppointments": 5,
+        "_id": "67cbd9ea7e79a9ae7be974b2"
+      },
+      {
+        "doctorId": "67cbd38d2a018996de7e505c",
+        "maxAppointments": 5,
+        "_id": "67cbd9ea7e79a9ae7be974b3"
+      },
+      {
+        "doctorId": "67cbd40e2a018996de7e505e",
+        "maxAppointments": 5,
+        "_id": "67cbd9ea7e79a9ae7be974b4"
+      }
+    ],
+    "_id": "67cbd9ea7e79a9ae7be974b1",
+    "__v": 0
+  }
+}
+```
+
+### Update Doctor Schedule
+```http
+PUT /api/admin/update-schedule
+```
+
+**Request Body:**
+```json
+{
+    "date": "2025-03-10",
+    "doctorSlots": [
+        {
+            "doctorId": "67cbd30d586af44c6e387a37",
+            "maxAppointments": 10
+        },
+        {
+            "doctorId": "67cbd38d2a018996de7e505c",
+            "maxAppointments": 5
+        },
+        {
+            "doctorId": "67cbd40e2a018996de7e505e",
+            "maxAppointments": 5
+        }
+    ]
+}
+
+```
+
+**Response:**
+```json
+{
+  "message": "Schedule updated successfully",
+  "schedule": {
+    "hospitalId": "67cbd1719a63d26518afbf9e",
+    "date": "2025-03-10",
+    "doctorSlots": [
+      {
+        "doctorId": "67cbd30d586af44c6e387a37",
+        "maxAppointments": 10,
+        "_id": "67cbd9ea7e79a9ae7be974b2"
+      },
+      {
+        "doctorId": "67cbd38d2a018996de7e505c",
+        "maxAppointments": 5,
+        "_id": "67cbd9ea7e79a9ae7be974b3"
+      },
+      {
+        "doctorId": "67cbd40e2a018996de7e505e",
+        "maxAppointments": 5,
+        "_id": "67cbd9ea7e79a9ae7be974b4"
+      }
+    ],
+    "_id": "67cbd9ea7e79a9ae7be974b1",
+    "__v": 0
+  }
+}
+```
+
+### Get Schedule of a Date
+```http
+GET /api/admin/get-schedule
+```
+
+**Request Body:**
+```json
+{
+  "date": "2025-03-10"
+}
+```
+
+**Response:**
+```json
+{
+  "schedules": [
+    {
+      "_id": "67cbd9ea7e79a9ae7be974b1",
+      "hospitalId": "67cbd1719a63d26518afbf9e",
+      "date": "2025-03-10",
+      "doctorSlots": [
+        {
+          "doctorId": "67cbd30d586af44c6e387a37",
+          "maxAppointments": 10,
+          "_id": "67cbdb3cd1538b1687c28c34"
+        },
+        {
+          "doctorId": "67cbd38d2a018996de7e505c",
+          "maxAppointments": 5,
+          "_id": "67cbdb3cd1538b1687c28c35"
+        },
+        {
+          "doctorId": "67cbd40e2a018996de7e505e",
+          "maxAppointments": 5,
+          "_id": "67cbdb3cd1538b1687c28c36"
+        }
+      ],
+      "__v": 3
+    }
+  ]
+}
+```
+
+### Get All Doctor Schedule 
+```http
+GET /api/admin/get-schedules
+```
+
+**Request Body:**
+```json
+
+```
+
+**Response:**
+```json
+{
+  "schedules": [
+    {
+      "_id": "67cbd9ea7e79a9ae7be974b1",
+      "hospitalId": "67cbd1719a63d26518afbf9e",
+      "date": "2025-03-10",
+      "doctorSlots": [
+        { "doctorId": "67cbd30d586af44c6e387a37", "maxAppointments": 10 },
+        { "doctorId": "67cbd38d2a018996de7e505c", "maxAppointments": 5 },
+        { "doctorId": "67cbd40e2a018996de7e505e", "maxAppointments": 5 }
+      ]
+    },
+    {
+      "_id": "67cbddafb96a2d94b84a9f70",
+      "hospitalId": "67cbd1719a63d26518afbf9e",
+      "date": "2025-03-11",
+      "doctorSlots": [
+        { "doctorId": "67cbd30d586af44c6e387a37", "maxAppointments": 5 },
+        { "doctorId": "67cbd38d2a018996de7e505c", "maxAppointments": 5 },
+        { "doctorId": "67cbd40e2a018996de7e505e", "maxAppointments": 5 }
+      ]
+    }
+  ]
+}
+
+```
+
 
 ## 👨‍👩‍👦 Patient Management
 
