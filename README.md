@@ -55,7 +55,7 @@ SigmaCare Backend is a comprehensive healthcare management system that provides 
 
 ### Register User
 ```http
-POST /api/user/register
+POST /api/users/register
 ```
 
 **Request Body:**
@@ -77,7 +77,7 @@ POST /api/user/register
 
 ### Login User
 ```http
-POST /api/user/login
+POST /api/users/login
 ```
 
 **Request Body:**
@@ -507,7 +507,7 @@ POST /api/patients
   "name": "John Doe",
   "age": 65,
   "medical_conditions": ["Diabetes", "Hypertension"],
-  "device_id": "DEVICE123"
+  "device_id": "DEVICE123" // optional
 }
 ```
 
@@ -614,7 +614,7 @@ PUT /api/patients/:id
 
 ### Book Appointment
 ```http
-POST /api/appointments
+POST /api/appointment
 ```
 
 **Headers:**
@@ -650,7 +650,7 @@ POST /api/appointments
 
 ### Get User's Appointments
 ```http
-GET /api/appointments
+GET /api/appointment
 ```
 
 **Headers:**
@@ -678,7 +678,7 @@ GET /api/appointments
 
 ### Get Appointment by ID
 ```http
-GET /api/appointments/:id
+GET /api/appointment/:id
 ```
 
 **Headers:**
@@ -704,7 +704,7 @@ GET /api/appointments/:id
 
 ### Update Appointment
 ```http
-PUT /api/appointments/:id
+PUT /api/appointment/:id
 ```
 
 **Headers:**
@@ -738,7 +738,7 @@ PUT /api/appointments/:id
 
 ### Delete Appointment
 ```http
-DELETE /api/appointments/:id
+DELETE /api/appointment/:id
 ```
 
 **Headers:**
