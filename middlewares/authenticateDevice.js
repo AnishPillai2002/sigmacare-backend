@@ -2,8 +2,7 @@ const Device = require("../models/Device");
 
 const authenticateDevice = async (req, res, next) => {
     try {
-        const { device_code } = req.headers;
-
+        const { device_code } = req.body;
         // Ensure device_code is provided
         if (!device_code) {
             return res.status(400).json({ message: "Device authentication failed: Missing device_code" });

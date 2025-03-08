@@ -17,27 +17,34 @@ const queryApi = influxDB.getQueryApi(process.env.INFLUX_ORG);
 // 📌 POST: Store sensor data in InfluxDB
 router.post("/", authenticateDevice, async (req, res) => {
   try {
-    const { device_code, accelX, accelY, accelZ, gyroX, gyroY, gyroZ } = req.body;
+    const { device_code, temperature, accelX, accelY, accelZ, gyroX, gyroY, gyroZ, bpm, spo2 } = req.body;
 
     if (!device_code || accelX === undefined || accelY === undefined || accelZ === undefined ||
-        gyroX === undefined || gyroY === undefined || gyroZ === undefined) {
+        gyroX === undefined || gyroY === undefined || gyroZ === undefined || bpm === undefined || spo2 === undefined || temperature === undefined) {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
     // Create the Point object for InfluxDB
     const point = new Point(process.env.INFLUX_MEASUREMENT)
       .tag("deviceId", device_code)
+      .floatField("temperature", temperature)
       .floatField("accelX", accelX)
       .floatField("accelY", accelY)
       .floatField("accelZ", accelZ)
       .floatField("gyroX", gyroX)
       .floatField("gyroY", gyroY)
       .floatField("gyroZ", gyroZ)
+      .floatField("spo2", spo2)
+      .floatField("bpm", bpm) 
       .timestamp(new Date());
 
     // Write the point to InfluxDB
     writeApi.writePoint(point);
     await writeApi.flush();
+
+    //fall detection
+    
+
 
     res.status(201).json({ message: "Sensor data stored successfully" });
   } catch (error) {
