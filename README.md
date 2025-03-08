@@ -755,6 +755,71 @@ DELETE /api/appointments/:id
 }
 ```
 
+### Get Slots Available in a Hospital
+```http
+POST /api/appointments/get-schedules
+```
+
+**Headers:**
+```json
+{
+  "Authorization": "Bearer <token>"
+}
+```
+
+**Request Body:**
+```json
+{
+  "hospitalId": "3hdhdh3h333"
+}
+```
+
+
+**Response:**
+```json
+{
+  "schedules": [
+    {
+      "_id": "67cbd9ea7e79a9ae7be974b1",
+      "hospitalId": "67cbd1719a63d26518afbf9e",
+      "date": "2025-03-10",
+      "doctorSlots": [
+        {
+          "doctorId": "67cbd30d586af44c6e387a37",
+          "maxAppointments": 10,
+          "_id": "67cbdb3cd1538b1687c28c34"
+        },
+        {
+          "doctorId": "67cbd40e2a018996de7e505e",
+          "maxAppointments": 5,
+          "_id": "67cbdb3cd1538b1687c28c36"
+        }
+      ],
+      "__v": 3
+    },
+    {
+      "_id": "67cbddafb96a2d94b84a9f70",
+      "hospitalId": "67cbd1719a63d26518afbf9e",
+      "date": "2025-03-11",
+      "doctorSlots": [
+        {
+          "doctorId": "67cbd30d586af44c6e387a37",
+          "maxAppointments": 5,
+          "_id": "67cbddafb96a2d94b84a9f71"
+        },
+        {
+          "doctorId": "67cbd40e2a018996de7e505e",
+          "maxAppointments": 5,
+          "_id": "67cbddafb96a2d94b84a9f73"
+        }
+      ],
+      "__v": 0
+    }
+  ]
+}
+```
+
+
 ## 📱 Device Management
 
 ### Register Device
