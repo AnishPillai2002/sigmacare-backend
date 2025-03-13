@@ -12,7 +12,7 @@ const appointmentRoutes = require('./routes/userRoutes/appointments_api');
 const sensorRoutes = require('./routes/deviceRoutes/device_api'); // ✅ Import InfluxDB sensor API
 const patientRoutes = require('./routes/userRoutes/patient_api');
 const deviceRoutes = require('./routes/deviceRoutes/deviceRegister'); // ✅ Import Device Register API
-
+const deviceUserRoutes = require('./routes/deviceRoutes/user_api'); // ✅ Import Device User API
 
 const app = express();
 
@@ -28,7 +28,7 @@ app.use('/api/admin', adminRoutes);
 app.use("/api/sensor-data", sensorRoutes); // ✅ Sensor Data API (InfluxDB)
 app.use("/api/patients", patientRoutes); // ✅ Patient API
 app.use('/api/device-register', deviceRoutes); // ✅ Device Register API
-
+app.use('/api', deviceUserRoutes); // ✅ Device User API
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })

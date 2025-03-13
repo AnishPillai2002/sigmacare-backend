@@ -1,3 +1,6 @@
+//this has to be deleted in final version
+
+
 const express = require("express");
 const { InfluxDB, Point } = require("@influxdata/influxdb-client"); // Import required InfluxDB modules
 
