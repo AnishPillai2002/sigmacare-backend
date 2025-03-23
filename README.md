@@ -822,7 +822,7 @@ POST /api/appointments/get-schedules
 
 ## 📱 Device Management
 
-### Register Device
+### 1. Register Device
 ```http
 POST /api/device-register
 ```
@@ -851,6 +851,86 @@ POST /api/device-register
     "isRegistered": true,
     "caretaker_id": "603d9c7f8c4b2b0015b5e984"
   }
+}
+```
+
+### 2. Get All Registered Devices
+```http
+GET /api/my-devices
+```
+
+**Headers:**
+```json
+{
+  "Authorization": "Bearer <token>"
+}
+```
+
+**Request Body:**
+```json
+
+```
+
+**Response:**
+```json
+{
+  "devices": [
+    {
+      "_id": "65ff8e12abc12345d6789a01",
+      "name": "xBand Pro",
+      "deviceId": "1",
+      "caretaker_id": "1823282374774858"
+    }
+  ]
+}
+```
+
+### 3. Get Historical Sensor Data for a Specific Device
+```http
+GET /api/sensor-reading/:deviceId
+```
+
+**Headers:**
+```json
+{
+  "Authorization": "Bearer <token>"
+}
+```
+
+**Request Body:**
+```json
+
+```
+
+**Response:**
+```json
+{
+  "deviceId": "1",
+  "data": [
+    {
+      "result": "_result",
+      "table": 0,
+      "_start": "2025-03-13T05:23:51.813803771Z",
+      "_stop": "2025-03-13T06:23:51.813803771Z",
+      "_time": "2025-03-13T05:35:08.886Z",
+      "_value": 0.5,
+      "_field": "accelX",
+      "_measurement": "sensor_readings",
+      "deviceId": "1"
+    },
+      .....
+    {
+      "result": "_result",
+      "table": 0,
+      "_start": "2025-03-13T05:23:51.813803771Z",
+      "_stop": "2025-03-13T06:23:51.813803771Z",
+      "_time": "2025-03-13T05:35:16.121Z",
+      "_value": 0.5,
+      "_field": "accelX",
+      "_measurement": "sensor_readings",
+      "deviceId": "1"
+    }
+  ]
 }
 ```
 

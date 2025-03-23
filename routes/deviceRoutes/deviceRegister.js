@@ -1,4 +1,5 @@
 const express = require("express");
+const jwt = require("jsonwebtoken");
 const authenticateToken = require("../../middlewares/authenticateToken"); // Middleware for caretaker auth
 const Device = require("../../models/Device");
 
@@ -25,9 +26,13 @@ router.post("/", authenticateToken, async (req, res) => {
             return res.status(400).json({ message: "Device is already registered" });
         }
 
+        // Generate JWT token for device authentication
+        const token = jwt.sign({ deviceId: device._id }, process.env.JWT_SECRET);
+
         // Link device to caretaker and mark as registered
         device.caretaker_id = caretaker_id;
         device.isRegistered = true;
+        device.jwtToken = token;
         await device.save();
 
         res.status(200).json({ message: "Device registered successfully", device });
@@ -36,8 +41,6 @@ router.post("/", authenticateToken, async (req, res) => {
         res.status(500).json({ message: "Internal Server Error" });
     }
 });
-
-// 📌 Get all Devices
 
 
 module.exports = router;
